@@ -62,6 +62,23 @@ test("every colour in the source reaches the palette", () => {
   assert.deepEqual(missing, [], `Not emitted into palette.js: ${missing.join(", ")}`);
 });
 
+test("the CommonJS build exports the same palette as the ESM one", () => {
+  // Two files, one source, and nothing stopping them from drifting except this.
+  const cjs = readFileSync(join(TOKENS, "palette.cjs"), "utf8");
+  for (const name of ["LIGHT", "DARK", "TYPE", "FONT", "SPACE", "RADIUS", "TAP_TARGET"]) {
+    assert.ok(new RegExp(`\\b${name}\\b`).test(cjs), `${name} missing from palette.cjs`);
+  }
+  assert.ok(/module\.exports = \{/.test(cjs), "palette.cjs should export via module.exports");
+  assert.ok(!/^export /m.test(cjs), "palette.cjs should carry no ESM exports");
+  // The values themselves, not just the names.
+  for (const token of colours("app")) {
+    assert.ok(
+      cjs.includes(`${camel(token.name)}: ${JSON.stringify(token.light)}`),
+      `${token.name} missing or wrong in palette.cjs`,
+    );
+  }
+});
+
 test("the declared type matches what the palette actually exports", () => {
   const declared = new Set(
     [...dts.matchAll(/^\s{2}([a-zA-Z0-9]+):\s*string;/gm)].map((m) => m[1]),

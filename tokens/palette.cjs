@@ -1,0 +1,145 @@
+/*
+ * Generated from tokens/tokens.json. Do not edit.
+ * Edit the source and run `npm run build`; palette.js is output, not input.
+ */
+
+const LIGHT = {
+  scheme: "light",
+  background: "#f4f5f7",
+  surface: "#ffffff",
+  surfaceInset: "#f7f8fa",
+  surfacePressed: "#eceef2",
+  line: "#e3e6ea",
+  lineStrong: "#cbd1d9",
+  ink: "#14181f",
+  inkMuted: "#5b6472",
+  inkSubtle: "#8b95a3",
+  inkInverse: "#ffffff",
+  brandYellow: "#ced218",
+  brandYellowInk: "#8c8f10",
+  brand: "#0a31e3",
+  brandStrong: "#0827b4",
+  brandSoft: "#e7eafc",
+  success: "#137a4c",
+  successSoft: "#e2f3ea",
+  warn: "#9a6100",
+  warnSoft: "#fdf1dc",
+  danger: "#b3261e",
+  dangerStrong: "#8c1e17",
+  dangerSoft: "#fbe9e7",
+  info: "#0b5f7a",
+  infoSoft: "#e2f1f6",
+  neutral: "#5b6472",
+  neutralSoft: "#eceef2",
+  overlay: "rgba(20, 24, 31, 0.45)",
+  chartSeries1: "#0a31e3",
+  chartSeries2: "#8c8f10",
+  chartSingle: "#0a31e3",
+  chartTrack: "#e8ebef",
+  chartGrid: "#e8ebef",
+  chartAxis: "#8b95a3",
+  severityGood: "#0ca30c",
+  severityWarning: "#c58704",
+  severitySerious: "#e97041",
+  severityCritical: "#d03b3b",
+  brand50: "#f5f7fe",
+  brand100: "#e7eafc",
+  brand200: "#c9d2f9",
+  brand300: "#9dadf4",
+  brand400: "#768cef",
+  brand500: "#3152e7",
+  brand600: "#0a31e3",
+  brand700: "#0827b4",
+  brand800: "#071f90",
+  brand900: "#06186f",
+  brand950: "#05104b",
+};
+
+const DARK = {
+  scheme: "dark",
+  background: "#0e1116",
+  surface: "#171c23",
+  surfaceInset: "#1f252e",
+  surfacePressed: "#242b35",
+  line: "#2a3139",
+  lineStrong: "#3a434e",
+  ink: "#eef1f5",
+  inkMuted: "#a3adba",
+  inkSubtle: "#75808e",
+  inkInverse: "#0e1116",
+  brandYellow: "#ced218",
+  brandYellowInk: "#8c8f10",
+  brand: "#768cef",
+  brandStrong: "#9dadf4",
+  brandSoft: "#05104b",
+  success: "#5ec98f",
+  successSoft: "#12251c",
+  warn: "#e0aa53",
+  warnSoft: "#2a2114",
+  danger: "#f08a80",
+  dangerStrong: "#f5a9a1",
+  dangerSoft: "#2d1917",
+  info: "#63b7d1",
+  infoSoft: "#12242a",
+  neutral: "#a3adba",
+  neutralSoft: "#232a33",
+  overlay: "rgba(0, 0, 0, 0.6)",
+  chartSeries1: "#768cef",
+  chartSeries2: "#ced218",
+  chartSingle: "#768cef",
+  chartTrack: "#242b35",
+  chartGrid: "#242b35",
+  chartAxis: "#75808e",
+  severityGood: "#0ca30c",
+  severityWarning: "#c58704",
+  severitySerious: "#e97041",
+  severityCritical: "#d03b3b",
+  brand50: "#f5f7fe",
+  brand100: "#e7eafc",
+  brand200: "#c9d2f9",
+  brand300: "#9dadf4",
+  brand400: "#768cef",
+  brand500: "#3152e7",
+  brand600: "#0a31e3",
+  brand700: "#0827b4",
+  brand800: "#071f90",
+  brand900: "#06186f",
+  brand950: "#05104b",
+};
+
+const TYPE = {
+  figure: { fontSize: 28, lineHeight: 34, fontWeight: "600" },
+  title: { fontSize: 20, lineHeight: 26, fontWeight: "600" },
+  heading: { fontSize: 17, lineHeight: 22, fontWeight: "600" },
+  body: { fontSize: 16, lineHeight: 22, fontWeight: "400" },
+  bodyStrong: { fontSize: 16, lineHeight: 22, fontWeight: "600" },
+  label: { fontSize: 13, lineHeight: 18, fontWeight: "500" },
+  caption: { fontSize: 13, lineHeight: 18, fontWeight: "400" },
+  mono: { fontSize: 15, lineHeight: 20, fontWeight: "500" },
+};
+
+const FONT = {
+  sans: "IBM Plex Sans",
+  mono: "IBM Plex Mono",
+  weights: [400,500,600],
+};
+
+const SPACE = {
+  "xs": 4,
+  "sm": 8,
+  "md": 12,
+  "lg": 16,
+  "xl": 24,
+  "xxl": 32
+};
+
+const RADIUS = {
+  "sm": 6,
+  "md": 10,
+  "lg": 14,
+  "pill": 999
+};
+
+const TAP_TARGET = 48;
+
+module.exports = { LIGHT, DARK, TYPE, FONT, SPACE, RADIUS, TAP_TARGET };

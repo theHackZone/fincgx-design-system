@@ -52,6 +52,12 @@ Plain JS with a `.d.ts` beside it, not TypeScript source. JSON and JS imports wo
 natively in both Next.js and Metro; TypeScript inside `node_modules` depends on
 Metro's transform reaching it, which is a bundler config nobody should have to own.
 
+Both module systems ship, and `exports` picks. Metro and Next read the ESM file;
+Jest runs as CommonJS and will not transform anything under `node_modules` unless
+the consumer edits `transformIgnorePatterns` — which is the same "configure your
+bundler" tax, arriving from a different direction. Both files are written in the
+same run from the same source, and a test asserts they agree.
+
 ## Change a token
 
 1. Edit `tokens/tokens.json`. It is the only hand-edited file here.

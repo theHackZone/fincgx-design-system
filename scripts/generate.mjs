@@ -254,7 +254,26 @@ export declare const RADIUS: Record<"sm" | "md" | "lg" | "pill", number>;
 export declare const TAP_TARGET: number;
 `;
 
-  return { js, types };
+  /*
+   * The same palette as CommonJS.
+   *
+   * Metro and Next both read the ESM file happily; Jest does not, because it
+   * runs as CommonJS and will not transform anything under node_modules unless
+   * the consumer edits `transformIgnorePatterns` — which is exactly the
+   * "configure your bundler" tax this package is supposed to avoid. Shipping
+   * both and letting `exports` choose means it simply works in any consumer.
+   *
+   * Generated from the same source in the same run, so the two cannot drift.
+   */
+  const cjs = js
+    .replace(/^export const /gm, "const ")
+    .concat(
+      `
+module.exports = { LIGHT, DARK, TYPE, FONT, SPACE, RADIUS, TAP_TARGET };
+`,
+    );
+
+  return { js, cjs, types };
 }
 
 // -------------------------------------------------------------------- //
@@ -336,8 +355,9 @@ ${reasons}
 
 if (process.argv[1] && process.argv[1].endsWith("generate.mjs")) {
   write(join(TOKENS, "tokens.css"), css());
-  const { js, types } = palette();
+  const { js, cjs, types } = palette();
   write(join(TOKENS, "palette.js"), js);
+  write(join(TOKENS, "palette.cjs"), cjs);
   write(join(TOKENS, "palette.d.ts"), types);
   write(join(HERE, "..", "docs", "tokens.md"), reference());
   const count = colours("web").length;
