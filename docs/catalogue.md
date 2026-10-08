@@ -34,13 +34,13 @@ live*.
 
 | concept | agreed name | web | app |
 | --- | --- | --- | --- |
-| a label above a number | `Stat` | `Figure` → rename | `Stat`, `StatTile`, `StatGrid` |
+| a label above a number | `Stat` | `Stat` ✓ | `Stat`, `StatTile`, `StatGrid` |
 | a stacked bar of severity bands | `SeverityBar` | `SeverityBar` ✓ | `StackedBar`, `Meter`, `Bar` |
 | a ranked list with bars | `BarList` | `BarList` ✓ | — |
 | a score on a dial | `ScoreDial` | `ScoreDial` ✓ | — |
 
-**`Figure` becomes `Stat`,** and this is a correction to Phase 1c rather than a
-preference. That phase renamed the *type role* `display` → `figure`, because
+**`Figure` became `Stat`,** and this was a correction to the type work rather
+than a preference. That phase renamed the *type role* `display` → `figure`, because
 what the largest size holds in this product is a number rather than display
 text. Leaving the component called `Figure` then meant one word naming both the
 size and the thing — and the component does not always render at that size: it
@@ -57,14 +57,21 @@ grid span and the role.
 
 | concept | agreed name | web | app |
 | --- | --- | --- | --- |
-| a label and its value | `DetailRow` | `KeyValueList`, `FieldRow` → rename | `DetailRow` ✓ |
+| a label and its value | `DetailRow` | inside `DetailList` | `DetailRow` ✓ |
 | a card | `Card` | `Card` ✓ | `Card` ✓ |
 | a row in a list that opens something | `ListRow` | — *(rows are table cells)* | `ListRow` ✓ |
 | a table of records | `DataTable` | `DataTable` ✓ | — *(the app stacks `ListRow`)* |
 
 `DetailRow` wins over `KeyValueList` because it names one row rather than the
-container, which is what both products actually compose with — and because "key"
-is a word this codebase already uses for catalogue keys and API identifiers.
+container, and because "key" is a word these codebases already use for catalogue
+keys and API identifiers. The web's container is `DetailList`, which lays the
+rows out in a grid and does not export the row itself — nothing there needs one
+on its own yet. Extracting it is a change worth making the day something does,
+and not before.
+
+`FieldRow` on the web is **not** this. It is a form-layout grid that puts two or
+three fields on a line, which the app has no equivalent of because it stacks. It
+keeps its name; the resemblance is in the word `Row` and nowhere else.
 
 ## Input
 
@@ -76,7 +83,7 @@ is a word this codebase already uses for catalogue keys and API identifiers.
 | a phone number | `PhoneField` | `PhoneField` ✓ | `PhoneField` ✓ |
 | an amount of money | `AmountField` | — *(spelled inline)* | `AmountField` ✓ |
 | a date | `DateField` | — *(native `date` input)* | `DateField` ✓ |
-| search | `SearchInput` | `SearchForm` → rename | `SearchInput` ✓ |
+| search | `SearchInput` | `SearchInput` ✓ | `SearchInput` ✓ |
 
 `Input` over `TextField` because the app's own `Field` is already the wrapper, so
 `TextField` reads as a second wrapper rather than the control inside it.
