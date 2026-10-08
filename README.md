@@ -11,7 +11,7 @@ reason it is not called `fincgx-tokens` and renamed in six months.
 ## Install
 
 ```jsonc
-"@fincgx/design-system": "github:theHackZone/fincgx-design-system#v1.0.0"
+"@fincgx/design-system": "github:theHackZone/fincgx-design-system"
 ```
 
 Both package managers resolve that plain reference, which is why **the repo root
@@ -24,9 +24,39 @@ Growth is by subpath export, not by sibling package. Anything that is not code �
 `docs/`, `brand/` — simply is not in `files`, so it never lands in either app's
 `node_modules`.
 
-A pinned tag resolves to a commit SHA in both lockfiles, which is the point of
-this being a repo rather than a sync script: the app can sit a version behind the
-dashboard **on purpose**, and say so in a diff.
+### No version tags, and why not
+
+**The default branch is the release.** There is no `#v1.2.0` to pin to, and
+tracking `main` is not the same as tracking "whatever landed five minutes ago":
+
+| | pnpm | npm |
+| --- | --- | --- |
+| what the lockfile records | the commit SHA | the commit SHA |
+| plain `install` after `main` moved | stays where it was | stays where it was |
+| `update @fincgx/design-system` | moves | moves |
+| `--frozen-lockfile` / `npm ci` | works | works |
+
+The lockfile is the pin. A tag and a branch give *identical* reproducibility —
+the only difference is what a human reads in `package.json`, and moving between
+versions is one command either way.
+
+This repo had tags for about an hour and they earned nothing. `v1.1.0` was tagged
+and broken: the release ceremony did not catch a dropped token, the missing test
+did. And the thing tags were supposed to buy — one app deliberately sitting
+behind the other, visibly — happened by accident instead, with the dashboard on
+`v1.1.1` and the app on `v1.2.0` and nothing anywhere saying so.
+
+With two consumers and one maintainer, the intended state is simply *both on
+latest*. Divergence is a bug rather than a feature, so it should be hard to do
+rather than easy to express.
+
+The `version` field is still bumped on a real change. It costs nothing, it shows
+up in both lockfiles and in `npm ls`, and it gives a human something to say.
+
+**What this costs** is that `main` has to always be green, so CI runs the whole
+suite on every push and refuses a commit whose generated files do not match their
+source. That gate used to be "somebody is cutting a release and will notice"; now
+it is a machine.
 
 ## Use
 
@@ -63,7 +93,14 @@ same run from the same source, and a test asserts they agree.
 1. Edit `tokens/tokens.json`. It is the only hand-edited file here.
 2. `npm run build`
 3. `npm test`
-4. Commit the generated files with the source, and tag.
+4. Commit the generated files **with** the source, and push.
+5. In each app: `pnpm update @fincgx/design-system` / `npm update @fincgx/design-system`.
+
+Steps 2 and 3 are not optional and not on the honour system. The output is
+committed, so a source pushed without a rebuild is a palette that no file in the
+repo describes — and with `main` as the release it reaches both apps directly.
+`test/committed.test.mjs` regenerates in memory and compares, and CI rebuilds and
+asks git whether anything moved.
 
 **The generated output is committed on purpose.** pnpm 10.26 stopped running
 `prepare` on git dependencies after CVE-2025-69264 unless the package is
@@ -99,7 +136,12 @@ It found two real defects on its first run, both of which had been shipping:
   rather than quietly waived — closing it means having two text greys instead of
   three, which is a designer's decision.
 
-A second suite, `test/output.test.mjs`, checks that the palette is *there* — that
+`test/committed.test.mjs` checks that the files in the tree are the files the
+source generates, which only matters because the output is committed — and
+matters more now that `main` is the release, because a source pushed without a
+rebuild no longer has a release cut in front of it to be noticed in.
+
+A third suite, `test/output.test.mjs`, checks that the palette is *there* — that
 every token in the source reaches both generated files, that nothing is mapped to
 a utility without a value behind it, and that nothing is generated with no source
 left. It exists because of a bug it would have caught on its first run: a filter
@@ -108,9 +150,10 @@ swallowed `brand-soft` and `brand-strong` with them. Nothing complained, because
 the contrast check reads the source — and v1.1.0 shipped with the dashboard's
 selected filter pill having no background at all.
 
-Both suites are planted: one breaks a token on purpose and asserts the contrast
-checker says so, the other removes a property from the output and asserts the
-scan names exactly that token. A check that cannot fail is worse than none,
+All three are planted: one breaks a token on purpose and asserts the contrast
+checker says so, one removes a property from the output and asserts the scan
+names exactly that token, and one edits the source without rebuilding and asserts
+the comparison names the line. A check that cannot fail is worse than none,
 because somebody will trust it.
 
 ## Layout
@@ -130,4 +173,6 @@ docs/
   catalogue.md       what each component is, on both platforms
   tokens.md          generated — every token, both platforms, both modes
   open-questions.md  what is known to be unresolved
+.github/workflows/
+  ci.yml             main is the release, so main has to be green
 ```

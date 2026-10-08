@@ -353,16 +353,31 @@ ${reasons}
 `;
 }
 
-if (process.argv[1] && process.argv[1].endsWith("generate.mjs")) {
-  write(join(TOKENS, "tokens.css"), css());
+/**
+ * Everything this generates, as text, keyed by where it belongs.
+ *
+ * Separated from writing it so the tests can regenerate in memory and compare
+ * against what is committed — without a build step that would paper over the
+ * difference by rewriting the files first.
+ */
+export function render() {
   const { js, cjs, types } = palette();
-  write(join(TOKENS, "palette.js"), js);
-  write(join(TOKENS, "palette.cjs"), cjs);
-  write(join(TOKENS, "palette.d.ts"), types);
-  write(join(HERE, "..", "docs", "tokens.md"), reference());
-  const count = colours("web").length;
+  return {
+    "tokens/tokens.css": css(),
+    "tokens/palette.js": js,
+    "tokens/palette.cjs": cjs,
+    "tokens/palette.d.ts": types,
+    "docs/tokens.md": reference(),
+  };
+}
+
+if (process.argv[1] && process.argv[1].endsWith("generate.mjs")) {
+  const files = render();
+  for (const [path, text] of Object.entries(files)) {
+    write(join(HERE, "..", path), text);
+  }
   console.log(
-    `tokens.css, palette.js, palette.d.ts, docs/tokens.md — ` +
-      `${count} colours, ${Object.keys(source.type).length - 1} type roles`,
+    `${Object.keys(files).length} files — ` +
+      `${colours("web").length} colours, ${Object.keys(source.type).length - 1} type roles`,
   );
 }

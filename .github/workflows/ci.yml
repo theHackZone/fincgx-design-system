@@ -1,0 +1,44 @@
+# Main is the release, so main has to be green.
+#
+# Both apps install this repo's default branch and pin the resulting commit in
+# their lockfiles. Nothing stands between a push here and the next `pnpm update`
+# in the dashboard, which is the trade made when the tags went away: the gate
+# moved from cutting a release to writing the commit.
+#
+# Three things are checked, and the third is the one that only matters because
+# the output is committed rather than built on install.
+name: tokens
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # No dependencies to install. The generator and the contrast arithmetic
+      # are both small enough to own, which is why this job has no cache and no
+      # lockfile to restore.
+      - name: The palette is right, present, and matches its source
+        run: npm test
+
+      # Belt and braces on the committed output. `npm test` compares what is in
+      # the tree against a fresh render; this proves the same thing the other way
+      # round, by actually rebuilding and asking git whether anything moved. It
+      # would catch a generator that is not deterministic, which the in-memory
+      # comparison cannot.
+      - name: Rebuilding changes nothing
+        run: |
+          npm run build
+          git diff --exit-code -- tokens docs || {
+            echo "::error::Generated files are out of date — run \`npm run build\` and commit the result."
+            exit 1
+          }
