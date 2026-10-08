@@ -1,0 +1,31 @@
+{
+  "name": "@fincgx/design-system",
+  "version": "1.0.0",
+  "description": "One source for the Fin&CGX palette, type scale and spacing, consumed by the dashboard and the mobile app.",
+  "license": "UNLICENSED",
+  "private": false,
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theHackZone/fincgx-design-system.git"
+  },
+  "exports": {
+    "./tokens": {
+      "types": "./tokens/palette.d.ts",
+      "default": "./tokens/palette.js"
+    },
+    "./tokens/tokens.css": "./tokens/tokens.css",
+    "./tokens/tokens.json": "./tokens/tokens.json",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "tokens"
+  ],
+  "scripts": {
+    "build": "node scripts/generate.mjs",
+    "test": "node --test \"test/**/*.test.mjs\""
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

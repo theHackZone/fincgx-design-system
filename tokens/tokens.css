@@ -1,0 +1,222 @@
+/*
+ * Generated from tokens/tokens.json. Do not edit.
+ * Edit the source and run `npm run build`; tokens.css is output, not input.
+ */
+
+@theme {
+  --color-brand-50: #f5f7fe;
+  --color-brand-100: #e7eafc;
+  --color-brand-200: #c9d2f9;
+  --color-brand-300: #9dadf4;
+  --color-brand-400: #768cef;
+  --color-brand-500: #3152e7;
+  --color-brand-600: #0a31e3;
+  --color-brand-700: #0827b4;
+  --color-brand-800: #071f90;
+  --color-brand-900: #06186f;
+  --color-brand-950: #05104b;
+
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+
+  --text-figure: 2.25rem;
+  --text-figure--line-height: 2.5rem;
+  --text-figure--font-weight: 600;
+  --text-title: 1.5rem;
+  --text-title--line-height: 2rem;
+  --text-title--font-weight: 600;
+  --text-heading: 1.125rem;
+  --text-heading--line-height: 1.75rem;
+  --text-heading--font-weight: 600;
+  --text-body: 0.875rem;
+  --text-body--line-height: 1.25rem;
+  --text-body--font-weight: 400;
+  --text-body-strong: 0.875rem;
+  --text-body-strong--line-height: 1.25rem;
+  --text-body-strong--font-weight: 600;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1rem;
+  --text-label--font-weight: 500;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1rem;
+  --text-caption--font-weight: 400;
+  --text-mono: 0.8125rem;
+  --text-mono--line-height: 1.125rem;
+  --text-mono--font-weight: 500;
+}
+
+:root {
+  color-scheme: light;
+
+
+  /*
+   * The page behind everything. On the web this was called surface-sunken,
+   * which named the wrong thing: a page is not a well.
+   */
+  --background: #f6f7f9;
+
+  /*
+   * A card on the page. On the web this was surface-raised.
+   */
+  --surface: #ffffff;
+
+  /*
+   * A field or a well inside a card. The two platforms run this in opposite
+   * directions in dark mode — the dashboard recesses a text input below its
+   * card, the app raises a row above it — and that is a real design
+   * difference rather than drift, so it is carried rather than averaged.
+   */
+  --surface-inset: #ffffff;
+
+  /*
+   * Pressed or hovered. The app had it as a token; the dashboard spelled it
+   * inline as hover:bg-surface-sunken, which is the page colour standing in
+   * for a state.
+   */
+  --surface-pressed: #eceef2;
+
+  /*
+   * A hairline. Named `line` and not `border` because the web generates a
+   * utility from it and `border-border` is not a name anybody should have
+   * to type; the app's JS key reads the same either way, so the platform
+   * with the constraint decides.
+   */
+  --line: #e4e7ec;
+  --line-strong: #d0d5dd;
+
+  /*
+   * Body text. `ink` and not `text` for the same reason as `line`: --text-*
+   * is Tailwind's namespace for font sizes, so a colour called text-muted
+   * would sit three lines from a size called caption and the first one
+   * moved into @theme by mistake would declare a font size called muted.
+   */
+  --ink: #101828;
+  --ink-muted: #667085;
+
+  /*
+   * The faintest step, and the one with no contrast budget left. It carries
+   * the eyebrow over a figure and the header of a table — small text set in
+   * caps — so WCAG asks 4.5 of it and it does not deliver: the web shipped
+   * #98a2b3, which is 2.58 on a white card. Darkened here to 3.06, which is
+   * what the app and both dark modes already manage. It is not taken to 4.5
+   * because at 4.5 on white it is #69778f against ink-muted's #667085 and
+   * the third step stops existing. Collapsing three text greys into two is
+   * a design decision rather than a token nudge; see
+   * docs/open-questions.md.
+   */
+  --ink-subtle: #8994a8;
+
+  /*
+   * Text on a filled brand or danger surface.
+   */
+  --ink-inverse: #ffffff;
+  --success: #137a4c;
+  --success-soft: #e2f3ea;
+  --warn: #9a6100;
+  --warn-soft: #fdf1dc;
+  --danger: #b3261e;
+  --danger-soft: #fbe9e7;
+  --info: #0b5f7a;
+  --info-soft: #e2f1f6;
+  --neutral: #5b6472;
+  --neutral-soft: #eceef2;
+
+  /*
+   * The scrim behind the offline / stale-data banner.
+   */
+  --overlay: rgba(20, 24, 31, 0.45);
+  --shell: #000000;
+  --shell-line: #1b1b22;
+  --shell-ink: #c6cce3;
+  --shell-ink-muted: #8f97b4;
+  --chart-series-1: #0a31e3;
+  --chart-series-2: #8c8f10;
+  --chart-single: #0a31e3;
+  --chart-track: #eceff3;
+  --chart-grid: #eceff3;
+  --chart-axis: #98a2b3;
+  --severity-good: #0ca30c;
+  --severity-warning: #c58704;
+  --severity-serious: #e97041;
+  --severity-critical: #d03b3b;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --background: #0a0e12;
+    --surface: #171d24;
+    --surface-inset: #10151a;
+    --surface-pressed: #232c36;
+    --line: #232c36;
+    --line-strong: #333f4d;
+    --ink: #e8edf3;
+    --ink-muted: #97a3b1;
+    --ink-subtle: #6d7986;
+    --ink-inverse: #0e1116;
+    --success: #5ec98f;
+    --success-soft: #12251c;
+    --warn: #e0aa53;
+    --warn-soft: #2a2114;
+    --danger: #f08a80;
+    --danger-soft: #2d1917;
+    --info: #63b7d1;
+    --info-soft: #12242a;
+    --neutral: #a3adba;
+    --neutral-soft: #232a33;
+    --overlay: rgba(0, 0, 0, 0.6);
+    --shell: #000000;
+    --shell-line: #1b1b22;
+    --shell-ink: #c6cce3;
+    --shell-ink-muted: #8f97b4;
+    --chart-series-1: #768cef;
+    --chart-series-2: #ced218;
+    --chart-single: #768cef;
+    --chart-track: #232c36;
+    --chart-grid: #232c36;
+    --chart-axis: #6d7986;
+    --severity-good: #0ca30c;
+    --severity-warning: #c58704;
+    --severity-serious: #e97041;
+    --severity-critical: #d03b3b;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-inset: var(--surface-inset);
+  --color-surface-pressed: var(--surface-pressed);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-subtle: var(--ink-subtle);
+  --color-ink-inverse: var(--ink-inverse);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-neutral: var(--neutral);
+  --color-neutral-soft: var(--neutral-soft);
+  --color-overlay: var(--overlay);
+  --color-shell: var(--shell);
+  --color-shell-line: var(--shell-line);
+  --color-shell-ink: var(--shell-ink);
+  --color-shell-ink-muted: var(--shell-ink-muted);
+  --color-chart-series-1: var(--chart-series-1);
+  --color-chart-series-2: var(--chart-series-2);
+  --color-chart-single: var(--chart-single);
+  --color-chart-track: var(--chart-track);
+  --color-chart-grid: var(--chart-grid);
+  --color-chart-axis: var(--chart-axis);
+  --color-severity-good: var(--severity-good);
+  --color-severity-warning: var(--severity-warning);
+  --color-severity-serious: var(--severity-serious);
+  --color-severity-critical: var(--severity-critical);
+}
