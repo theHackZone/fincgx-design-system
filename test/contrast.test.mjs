@@ -118,6 +118,18 @@ for (const [name, sets] of [
       atLeast(p["chart-series-1"], p["chart-series-2"], 1.5, `${name} ${mode} the two slots`);
     });
 
+    test(`${name} ${mode}: a filled control is visible, and its label readable`, () => {
+      // The two fills either product paints: the primary action and the
+      // destructive one. Each has to be findable against the card it sits on,
+      // and `ink-inverse` has to be readable on top of it — which is the pair
+      // the static brand ramp could not hold, at 2.04 against a dark card.
+      for (const fill of ["brand", "danger"]) {
+        atLeast(p[fill], p.surface, OBJECT, `${name} ${mode} ${fill} fill on a card`);
+        atLeast(p["ink-inverse"], p[fill], TEXT, `${name} ${mode} label on ${fill}`);
+        atLeast(p[`${fill}-strong`], p.surface, OBJECT, `${name} ${mode} ${fill} pressed`);
+      }
+    });
+
     test(`${name} ${mode}: every tone is readable on its own soft ground`, () => {
       for (const tone of ["success", "warn", "danger", "info", "neutral"]) {
         atLeast(p[tone], p[`${tone}-soft`], TEXT, `${name} ${mode} ${tone}`);

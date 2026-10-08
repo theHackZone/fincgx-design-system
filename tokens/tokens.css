@@ -110,11 +110,26 @@
    * Text on a filled brand or danger surface.
    */
   --ink-inverse: #ffffff;
+
+  /*
+   * The accent, as opposed to the eleven-step ramp. Mode-aware, because the
+   * ramp is not: #0a31e3 is 8.20 on white and 2.04 against a dark card, so
+   * a filled button in dark mode reads as a hole rather than a control. The
+   * dark step is brand-400, which is where the chart series already goes
+   * for the same reason.
+   */
+  --brand: #0a31e3;
   --success: #137a4c;
   --success-soft: #e2f3ea;
   --warn: #9a6100;
   --warn-soft: #fdf1dc;
   --danger: #b3261e;
+
+  /*
+   * Hover and press for a destructive button, which is the only filled
+   * danger surface in either product.
+   */
+  --danger-strong: #8c1e17;
   --danger-soft: #fbe9e7;
   --info: #0b5f7a;
   --info-soft: #e2f1f6;
@@ -155,11 +170,13 @@
     --ink-muted: #97a3b1;
     --ink-subtle: #6d7986;
     --ink-inverse: #0e1116;
+    --brand: #768cef;
     --success: #5ec98f;
     --success-soft: #12251c;
     --warn: #e0aa53;
     --warn-soft: #2a2114;
     --danger: #f08a80;
+    --danger-strong: #f5a9a1;
     --danger-soft: #2d1917;
     --info: #63b7d1;
     --info-soft: #12242a;
@@ -194,11 +211,13 @@
   --color-ink-muted: var(--ink-muted);
   --color-ink-subtle: var(--ink-subtle);
   --color-ink-inverse: var(--ink-inverse);
+  --color-brand: var(--brand);
   --color-success: var(--success);
   --color-success-soft: var(--success-soft);
   --color-warn: var(--warn);
   --color-warn-soft: var(--warn-soft);
   --color-danger: var(--danger);
+  --color-danger-strong: var(--danger-strong);
   --color-danger-soft: var(--danger-soft);
   --color-info: var(--info);
   --color-info-soft: var(--info-soft);

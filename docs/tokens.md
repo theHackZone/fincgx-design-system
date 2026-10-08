@@ -29,6 +29,9 @@ differ, the reason is at the bottom of this page.
 | --- | --- | --- | --- |
 | `brand-yellow` | `#ced218` | `#ced218` | same |
 | `brand-yellow-ink` | `#8c8f10` | `#8c8f10` | same |
+| `brand` | `#0a31e3` | `#768cef` | same |
+| `brand-strong` | `#0827b4` | `#9dadf4` | same |
+| `brand-soft` | `#e7eafc` | `#05104b` | same |
 | `brand-50` | `#f5f7fe` | `#f5f7fe` | same |
 | `brand-100` | `#e7eafc` | `#e7eafc` | same |
 | `brand-200` | `#c9d2f9` | `#c9d2f9` | same |
@@ -50,6 +53,7 @@ differ, the reason is at the bottom of this page.
 | `warn` | `#9a6100` | `#e0aa53` | same |
 | `warn-soft` | `#fdf1dc` | `#2a2114` | same |
 | `danger` | `#b3261e` | `#f08a80` | same |
+| `danger-strong` | `#8c1e17` | `#f5a9a1` | same |
 | `danger-soft` | `#fbe9e7` | `#2d1917` | same |
 | `info` | `#0b5f7a` | `#63b7d1` | same |
 | `info-soft` | `#e2f1f6` | `#12242a` | same |
@@ -132,5 +136,13 @@ role, at weights 400 / 500 / 600.
 **`brand-yellow`** — The arrows, as supplied. 12.86 on black and 1.63 on white, so it can carry a dark ground and can never be text or a fill on a light one. Deliberately not the accent anywhere else in either product: amber already means `behind, not yet serious` in the PAR ramp, and a yellow control would be the overdue colour pointing at whatever is on screen.
 
 **`brand-yellow-ink`** — The same yellow taken down until it clears 3:1 on white.
+
+**`brand`** — The accent, as opposed to the eleven-step ramp. Mode-aware, because the ramp is not: #0a31e3 is 8.20 on white and 2.04 against a dark card, so a filled button in dark mode reads as a hole rather than a control. The dark step is brand-400, which is where the chart series already goes for the same reason.
+
+**`brand-strong`** — Hover and press for anything filled with `brand`.
+
+**`brand-soft`** — The ground under a brand-toned badge or icon chip.
+
+**`danger-strong`** — Hover and press for a destructive button, which is the only filled danger surface in either product.
 
 **`overlay`** — The scrim behind the offline / stale-data banner.

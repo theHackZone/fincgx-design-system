@@ -17,11 +17,15 @@ export type Palette = {
   inkInverse: string;
   brandYellow: string;
   brandYellowInk: string;
+  brand: string;
+  brandStrong: string;
+  brandSoft: string;
   success: string;
   successSoft: string;
   warn: string;
   warnSoft: string;
   danger: string;
+  dangerStrong: string;
   dangerSoft: string;
   info: string;
   infoSoft: string;
