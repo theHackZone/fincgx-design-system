@@ -1,6 +1,6 @@
 {
   "name": "@fincgx/design-system",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "One source for the Fin&CGX palette, type scale and spacing, consumed by the dashboard and the mobile app.",
   "license": "UNLICENSED",
   "private": false,

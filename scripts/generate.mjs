@@ -91,10 +91,23 @@ export function colours(platform) {
   }
   for (const [step, value] of Object.entries(source.brand)) {
     if (step.startsWith("$")) continue;
-    out.push({ name: `brand-${step}`, light: value, dark: value, why: null });
+    out.push({ name: `brand-${step}`, light: value, dark: value, why: null, ramp: true });
   }
   return out;
 }
+
+/**
+ * The eleven ramp steps, which the web emits into `@theme` rather than as
+ * custom properties because they do not change by mode.
+ *
+ * Flagged where they are built rather than matched on their names. Written the
+ * obvious way first — a prefix match on the ramp's own name — this silently
+ * swallowed `brand-soft` and `brand-strong` as well, and shipped a release where
+ * the dashboard's selected filter pill had no background at all. The contrast
+ * test did not catch it because it reads the source; `test/output.test.mjs` now
+ * reads what is actually generated.
+ */
+const isRampStep = (token) => token.ramp === true;
 
 // -------------------------------------------------------------------- //
 // Web: custom properties, light-first, re-mapped for dark
@@ -128,7 +141,7 @@ function css() {
    */
   const scheme = (mode) =>
     tokens
-      .filter((t) => !t.name.startsWith("brand-"))
+      .filter((t) => !isRampStep(t))
       .flatMap((t) => {
         const value = `  --${t.name}: ${mode === "light" ? t.light : t.dark};`;
         if (mode !== "light" || !t.why) return [value];
@@ -151,7 +164,7 @@ function css() {
 
   // Tailwind utilities, pointed at the properties above.
   lines.push("@theme inline {");
-  for (const token of tokens.filter((t) => !t.name.startsWith("brand-"))) {
+  for (const token of tokens.filter((t) => !isRampStep(t))) {
     lines.push(`  --color-${token.name}: var(--${token.name});`);
   }
   lines.push("}");

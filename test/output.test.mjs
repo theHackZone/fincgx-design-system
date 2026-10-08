@@ -1,0 +1,115 @@
+/**
+ * Does everything in the source actually reach both outputs?
+ *
+ * This exists because of a bug it would have caught on the first run.
+ * `brand-soft` and `brand-strong` were dropped by a filter meant to exclude the
+ * eleven ramp steps, which matched on the `brand-` prefix and swallowed them
+ * too. Nothing complained: the contrast test reads `tokens.json`, so every
+ * assertion about those colours passed while neither generated file contained
+ * them — and the dashboard shipped a release where the selected filter pill had
+ * no background at all.
+ *
+ * So the rule is: the contrast test says the palette is right, and this one says
+ * the palette is *there*. A generator with no check on its output is a check on
+ * nothing.
+ */
+
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { test } from "node:test";
+
+import { colours, source } from "../scripts/generate.mjs";
+
+const TOKENS = join(dirname(fileURLToPath(import.meta.url)), "..", "tokens");
+const css = readFileSync(join(TOKENS, "tokens.css"), "utf8");
+const js = readFileSync(join(TOKENS, "palette.js"), "utf8");
+const dts = readFileSync(join(TOKENS, "palette.d.ts"), "utf8");
+
+const camel = (s) => s.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase());
+
+/**
+ * A ramp step arrives as `--color-brand-500` inside `@theme`; everything else
+ * arrives as `--name` in `:root` and is mapped to a utility afterwards. Both
+ * count as emitted, and nothing else does.
+ */
+const inStylesheet = (name, text = css) =>
+  new RegExp(`--(?:color-)?${name}\\s*:`).test(text);
+
+test("every colour in the source reaches the stylesheet", () => {
+  const missing = colours("web")
+    .filter((t) => !inStylesheet(t.name))
+    .map((t) => t.name);
+  assert.deepEqual(missing, [], `Not emitted into tokens.css: ${missing.join(", ")}`);
+});
+
+test("every colour the stylesheet defines is reachable as a utility", () => {
+  // A property nothing maps into `@theme inline` is a value no class can use,
+  // which looks exactly like the value being absent.
+  const defined = [...css.matchAll(/^\s{2}--([a-z0-9-]+):/gm)]
+    .map((m) => m[1])
+    .filter((n) => !n.startsWith("text-") && !n.startsWith("font-") && !n.startsWith("color-"));
+  const mapped = new Set([...css.matchAll(/--color-([a-z0-9-]+): var\(/g)].map((m) => m[1]));
+  const orphans = defined.filter((n) => !mapped.has(n));
+  assert.deepEqual(orphans, [], `Defined but not exposed as a utility: ${orphans.join(", ")}`);
+});
+
+test("every colour in the source reaches the palette", () => {
+  const missing = colours("app")
+    .filter((t) => !new RegExp(`\\b${camel(t.name)}\\s*:`).test(js))
+    .map((t) => t.name);
+  assert.deepEqual(missing, [], `Not emitted into palette.js: ${missing.join(", ")}`);
+});
+
+test("the declared type matches what the palette actually exports", () => {
+  const declared = new Set(
+    [...dts.matchAll(/^\s{2}([a-zA-Z0-9]+):\s*string;/gm)].map((m) => m[1]),
+  );
+  const exported = colours("app").map((t) => camel(t.name));
+  const undeclared = exported.filter((k) => !declared.has(k));
+  assert.deepEqual(undeclared, [], `In palette.js but not in Palette: ${undeclared.join(", ")}`);
+});
+
+test("both outputs agree with the source on the ramp and the type scale", () => {
+  for (const [step, value] of Object.entries(source.brand)) {
+    if (step.startsWith("$")) continue;
+    assert.ok(
+      css.includes(`--color-brand-${step}: ${value};`),
+      `brand-${step} should be ${value} in tokens.css`,
+    );
+  }
+  for (const [role, sizes] of Object.entries(source.type)) {
+    if (role.startsWith("$")) continue;
+    assert.ok(
+      css.includes(`--text-${role}: ${sizes.web[0] / 16}rem;`),
+      `${role} should be ${sizes.web[0]}px on the web`,
+    );
+    assert.ok(
+      new RegExp(`${camel(role)}: \\{ fontSize: ${sizes.app[0]},`).test(js),
+      `${role} should be ${sizes.app[0]}dp in the app`,
+    );
+  }
+});
+
+test("nothing is generated that no longer has a source", () => {
+  const known = new Set(colours("web").map((t) => t.name));
+  const stale = [...css.matchAll(/--color-([a-z0-9-]+): var\(/g)]
+    .map((m) => m[1])
+    .filter((n) => !known.has(n));
+  assert.deepEqual(stale, [], `In tokens.css with no entry in tokens.json: ${stale.join(", ")}`);
+});
+
+/**
+ * The guard, pointed at a fixture of the bug it exists to catch — the exact
+ * shape of the one that got through.
+ */
+test("the scan would notice a colour that stopped being emitted", () => {
+  const withoutBrandSoft = css.replace(/^\s*--(?:color-)?brand-soft:.*$/gm, "");
+  const missing = colours("web").filter((t) => !inStylesheet(t.name, withoutBrandSoft));
+  assert.deepEqual(
+    missing.map((t) => t.name),
+    ["brand-soft"],
+    "removing a property from the output should leave exactly that token missing",
+  );
+});

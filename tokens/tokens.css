@@ -112,6 +112,20 @@
   --ink-inverse: #ffffff;
 
   /*
+   * The arrows, as supplied. 12.86 on black and 1.63 on white, so it can
+   * carry a dark ground and can never be text or a fill on a light one.
+   * Deliberately not the accent anywhere else in either product: amber
+   * already means `behind, not yet serious` in the PAR ramp, and a yellow
+   * control would be the overdue colour pointing at whatever is on screen.
+   */
+  --brand-yellow: #ced218;
+
+  /*
+   * The same yellow taken down until it clears 3:1 on white.
+   */
+  --brand-yellow-ink: #8c8f10;
+
+  /*
    * The accent, as opposed to the eleven-step ramp. Mode-aware, because the
    * ramp is not: #0a31e3 is 8.20 on white and 2.04 against a dark card, so
    * a filled button in dark mode reads as a hole rather than a control. The
@@ -119,6 +133,16 @@
    * for the same reason.
    */
   --brand: #0a31e3;
+
+  /*
+   * Hover and press for anything filled with `brand`.
+   */
+  --brand-strong: #0827b4;
+
+  /*
+   * The ground under a brand-toned badge or icon chip.
+   */
+  --brand-soft: #e7eafc;
   --success: #137a4c;
   --success-soft: #e2f3ea;
   --warn: #9a6100;
@@ -170,7 +194,11 @@
     --ink-muted: #97a3b1;
     --ink-subtle: #6d7986;
     --ink-inverse: #0e1116;
+    --brand-yellow: #ced218;
+    --brand-yellow-ink: #8c8f10;
     --brand: #768cef;
+    --brand-strong: #9dadf4;
+    --brand-soft: #05104b;
     --success: #5ec98f;
     --success-soft: #12251c;
     --warn: #e0aa53;
@@ -211,7 +239,11 @@
   --color-ink-muted: var(--ink-muted);
   --color-ink-subtle: var(--ink-subtle);
   --color-ink-inverse: var(--ink-inverse);
+  --color-brand-yellow: var(--brand-yellow);
+  --color-brand-yellow-ink: var(--brand-yellow-ink);
   --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-soft: var(--brand-soft);
   --color-success: var(--success);
   --color-success-soft: var(--success-soft);
   --color-warn: var(--warn);

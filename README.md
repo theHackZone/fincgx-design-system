@@ -93,9 +93,19 @@ It found two real defects on its first run, both of which had been shipping:
   rather than quietly waived — closing it means having two text greys instead of
   three, which is a designer's decision.
 
-The check is itself planted: one test breaks a token on purpose and asserts that
-the checker says so. A palette check that cannot fail is worse than none, because
-somebody will trust it.
+A second suite, `test/output.test.mjs`, checks that the palette is *there* — that
+every token in the source reaches both generated files, that nothing is mapped to
+a utility without a value behind it, and that nothing is generated with no source
+left. It exists because of a bug it would have caught on its first run: a filter
+meant to exclude the eleven ramp steps matched on the `brand-` prefix and
+swallowed `brand-soft` and `brand-strong` with them. Nothing complained, because
+the contrast check reads the source — and v1.1.0 shipped with the dashboard's
+selected filter pill having no background at all.
+
+Both suites are planted: one breaks a token on purpose and asserts the contrast
+checker says so, the other removes a property from the output and asserts the
+scan names exactly that token. A check that cannot fail is worse than none,
+because somebody will trust it.
 
 ## Layout
 
