@@ -40,9 +40,13 @@
   --text-caption: 0.75rem;
   --text-caption--line-height: 1rem;
   --text-caption--font-weight: 400;
-  --text-mono: 0.8125rem;
-  --text-mono--line-height: 1.125rem;
-  --text-mono--font-weight: 500;
+}
+
+@utility text-mono {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+  font-weight: 500;
 }
 
 :root {

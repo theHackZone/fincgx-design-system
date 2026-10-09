@@ -145,12 +145,36 @@ function css() {
   lines.push(`  --font-mono: var(${faceVar(source.font.mono)}), ui-monospace, monospace;`);
   lines.push("");
   for (const [role, sizes] of Object.entries(source.type)) {
-    if (role.startsWith("$")) continue;
+    if (role.startsWith("$") || role === "mono") continue;
     const [size, leading, weight] = sizes.web;
     lines.push(`  --text-${role}: ${size / 16}rem;`);
     lines.push(`  --text-${role}--line-height: ${leading / 16}rem;`);
     lines.push(`  --text-${role}--font-weight: ${weight};`);
   }
+  lines.push("}\n");
+
+  /*
+   * `mono` is a utility and not a `--text-*` entry, because on the web the
+   * family is half the role. A `--text-mono` theme entry makes Tailwind emit a
+   * `.text-mono` that sets size, leading and weight and *not* family, which is
+   * a class whose name says monospace and whose output does not.
+   *
+   * That is not hypothetical. Moving the scale into this package turned the
+   * dashboard's hand-written utility into a theme entry, and for the whole of
+   * that time every account number, collection code and payment reference on
+   * the web rendered in the sans — on sixteen call sites, with no error, no
+   * failing test and nothing to see unless you knew the shape of the digits.
+   * Found by reading a computed `fontFamily` back out of a browser.
+   *
+   * The alternative is writing `font-mono text-mono` at every site: two names
+   * for one role, which is the thing this scale exists to stop.
+   */
+  const [monoSize, monoLeading, monoWeight] = source.type.mono.web;
+  lines.push("@utility text-mono {");
+  lines.push("  font-family: var(--font-mono);");
+  lines.push(`  font-size: ${monoSize / 16}rem;`);
+  lines.push(`  line-height: ${monoLeading / 16}rem;`);
+  lines.push(`  font-weight: ${monoWeight};`);
   lines.push("}\n");
 
   /**

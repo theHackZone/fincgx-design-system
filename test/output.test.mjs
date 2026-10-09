@@ -98,15 +98,44 @@ test("both outputs agree with the source on the ramp and the type scale", () => 
   }
   for (const [role, sizes] of Object.entries(source.type)) {
     if (role.startsWith("$")) continue;
-    assert.ok(
-      css.includes(`--text-${role}: ${sizes.web[0] / 16}rem;`),
-      `${role} should be ${sizes.web[0]}px on the web`,
-    );
+    // `mono` is a utility rather than a theme entry; see the next test.
+    const web =
+      role === "mono"
+        ? `font-size: ${sizes.web[0] / 16}rem;`
+        : `--text-${role}: ${sizes.web[0] / 16}rem;`;
+    assert.ok(css.includes(web), `${role} should be ${sizes.web[0]}px on the web`);
     assert.ok(
       new RegExp(`${camel(role)}: \\{ fontSize: ${sizes.app[0]},`).test(js),
       `${role} should be ${sizes.app[0]}dp in the app`,
     );
   }
+});
+
+/**
+ * `.text-mono` names a family, and a `--text-mono` theme entry cannot.
+ *
+ * Tailwind generates a size utility from a `--text-*` entry, and a size utility
+ * sets size, leading and weight. For seven of the eight roles that is the whole
+ * role. For `mono` the family is half of it, so the entry produced a class
+ * called `text-mono` that rendered in the sans.
+ *
+ * It shipped that way: moving the scale into this package replaced the
+ * dashboard's hand-written `@utility` with a theme entry, and sixteen call
+ * sites — account numbers, collection codes, payment references, the strings
+ * the role exists to make unambiguous — set in a proportional face with nothing
+ * failing anywhere. This is the assertion that was missing.
+ */
+test("the mono role carries its own family", () => {
+  const block = /@utility\s+text-mono\s*\{([^}]*)\}/.exec(css);
+  assert.ok(block, "tokens.css should define `@utility text-mono`");
+  assert.ok(
+    block[1].includes("font-family: var(--font-mono)"),
+    "`.text-mono` must set the family; a size utility alone renders in the sans",
+  );
+  assert.ok(
+    !css.includes("--text-mono:"),
+    "a `--text-mono` theme entry would generate a size-only `.text-mono` beside this one",
+  );
 });
 
 test("nothing is generated that no longer has a source", () => {
