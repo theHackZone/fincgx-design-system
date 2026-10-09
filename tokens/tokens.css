@@ -16,8 +16,8 @@
   --color-brand-900: #06186f;
   --color-brand-950: #05104b;
 
-  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
 
   --text-figure: 2.25rem;
   --text-figure--line-height: 2.5rem;

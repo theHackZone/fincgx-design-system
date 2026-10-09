@@ -130,3 +130,52 @@ test("the scan would notice a colour that stopped being emitted", () => {
     "removing a property from the output should leave exactly that token missing",
   );
 });
+
+/**
+ * The font the source names is the font the output asks for.
+ *
+ * These two lines read `--font-plex-sans` as a literal until the face changed,
+ * and the literal is the kind of wrong nothing catches: the custom property
+ * would simply have gone undefined and every face quietly fallen back to
+ * `ui-sans-serif`. The dashboard still has to publish the variable under this
+ * name from `next/font`, which no test here can reach — `lib/type-scale.test.ts`
+ * over there asserts that half against the installed package.
+ */
+test("the stylesheet asks for the face the source names", () => {
+  const varName = (family) => `--font-${family.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+
+  for (const role of ["sans", "mono"]) {
+    const expected = `--font-${role}: var(${varName(source.font[role])})`;
+    assert.ok(
+      css.includes(expected),
+      `tokens.css should contain "${expected}" — the source names ${source.font[role]}`,
+    );
+  }
+});
+
+/**
+ * Every weight the scale asks for has a face to render it.
+ *
+ * On a phone a weight *is* a file, so a role set at 500 with no `500` entry
+ * below renders in whatever the platform substitutes — on one platform, which
+ * is the half of this that never shows up in a screenshot.
+ */
+test("every weight in the type scale has a face named for it", () => {
+  const needed = new Set(
+    Object.entries(source.type)
+      .filter(([role]) => !role.startsWith("$"))
+      .filter(([role]) => role !== "mono")
+      .map(([, sizes]) => String(sizes.app[2])),
+  );
+
+  assert.deepEqual(
+    [...needed].sort(),
+    Object.keys(source.font.faces.sans).sort(),
+    "the sans faces and the weights the app scale uses should be the same set",
+  );
+  assert.deepEqual(
+    Object.keys(source.font.faces.mono),
+    [String(source.type.mono.app[2])],
+    "the mono face should be named for the weight the mono role is set at",
+  );
+});

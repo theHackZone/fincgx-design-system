@@ -102,7 +102,7 @@ differ, the reason is at the bottom of this page.
 | `caption` | 12 / 16 | 13 / 18 | 400 |
 | `mono` | 13 / 18 | 15 / 20 | 500 |
 
-Set in **IBM Plex Sans**, with **IBM Plex Mono** for the `mono`
+Set in **Manrope**, with **IBM Plex Mono** for the `mono`
 role, at weights 400 / 500 / 600.
 
 ### Spacing, radii, targets

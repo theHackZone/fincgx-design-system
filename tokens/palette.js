@@ -119,9 +119,13 @@ export const TYPE = {
 };
 
 export const FONT = {
-  sans: "IBM Plex Sans",
+  sans: "Manrope",
   mono: "IBM Plex Mono",
   weights: [400,500,600],
+  faces: {
+    sans: {"400":"Manrope-Regular","500":"Manrope-Medium","600":"Manrope-SemiBold"},
+    mono: {"500":"IBMPlexMono-Medm"},
+  },
 };
 
 export const SPACE = {

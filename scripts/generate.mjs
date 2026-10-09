@@ -113,6 +113,22 @@ const isRampStep = (token) => token.ramp === true;
 // Web: custom properties, light-first, re-mapped for dark
 // -------------------------------------------------------------------- //
 
+/**
+ * The custom property the dashboard publishes a loaded face under.
+ *
+ * Derived rather than written down, because the pair it has to match is in
+ * another repo: `next/font` names the variable in `app/layout.tsx` and this
+ * names it here, and nothing connects them but agreement. These two lines used
+ * to read `--font-plex-sans` as a literal, which survived the move to Manrope
+ * by not being wrong in a way anything could see — the variable would simply
+ * have gone undefined and every face fallen back to `ui-sans-serif`.
+ *
+ * So the rule is the name: `"IBM Plex Mono"` is `--font-ibm-plex-mono`, and a
+ * face named in `tokens.json` is a face the dashboard can look up without being
+ * told twice.
+ */
+const faceVar = (family) => `--font-${family.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+
 function css() {
   const tokens = colours("web");
   const lines = [`/*\n * ${BANNER("tokens.css").split("\n").join("\n * ")}\n */\n`];
@@ -123,8 +139,10 @@ function css() {
     lines.push(`  --color-brand-${step}: ${value};`);
   }
   lines.push("");
-  lines.push(`  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;`);
-  lines.push(`  --font-mono: var(--font-plex-mono), ui-monospace, monospace;`);
+  lines.push(
+    `  --font-sans: var(${faceVar(source.font.sans)}), ui-sans-serif, system-ui, sans-serif;`,
+  );
+  lines.push(`  --font-mono: var(${faceVar(source.font.mono)}), ui-monospace, monospace;`);
   lines.push("");
   for (const [role, sizes] of Object.entries(source.type)) {
     if (role.startsWith("$")) continue;
@@ -215,6 +233,10 @@ export const FONT = {
   sans: ${JSON.stringify(source.font.sans)},
   mono: ${JSON.stringify(source.font.mono)},
   weights: ${JSON.stringify(source.font.weights)},
+  faces: {
+    sans: ${JSON.stringify(source.font.faces.sans)},
+    mono: ${JSON.stringify(source.font.faces.mono)},
+  },
 };
 
 export const SPACE = ${JSON.stringify(source.space, null, 2).replace(/\n/g, "\n")};
@@ -248,7 +270,16 @@ ${Object.keys(source.type)
   .join("\n")},
   TypeRole
 >;
-export declare const FONT: { sans: string; mono: string; weights: number[] };
+export declare const FONT: {
+  sans: string;
+  mono: string;
+  weights: number[];
+  /** PostScript names, which is what React Native resolves a fontFamily to. */
+  faces: {
+    sans: Record<"400" | "500" | "600", string>;
+    mono: Record<"500", string>;
+  };
+};
 export declare const SPACE: Record<"xs" | "sm" | "md" | "lg" | "xl" | "xxl", number>;
 export declare const RADIUS: Record<"sm" | "md" | "lg" | "pill", number>;
 export declare const TAP_TARGET: number;

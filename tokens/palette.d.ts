@@ -74,7 +74,16 @@ export declare const TYPE: Record<
   | "mono",
   TypeRole
 >;
-export declare const FONT: { sans: string; mono: string; weights: number[] };
+export declare const FONT: {
+  sans: string;
+  mono: string;
+  weights: number[];
+  /** PostScript names, which is what React Native resolves a fontFamily to. */
+  faces: {
+    sans: Record<"400" | "500" | "600", string>;
+    mono: Record<"500", string>;
+  };
+};
 export declare const SPACE: Record<"xs" | "sm" | "md" | "lg" | "xl" | "xxl", number>;
 export declare const RADIUS: Record<"sm" | "md" | "lg" | "pill", number>;
 export declare const TAP_TARGET: number;
