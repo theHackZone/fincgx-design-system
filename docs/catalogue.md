@@ -20,15 +20,42 @@ inventing `Chip`.
 | concept | agreed name | web | app |
 | --- | --- | --- | --- |
 | a short status word from a fixed vocabulary | `Badge` | `Badge` ✓ | `Badge` ✓ |
-| an inline message about the thing on screen | `Alert` | `Alert` ✓ | `Banner`, `Problem`, `HorizonNotice`, `SuccessNotice`, `QueuedNotice` → collapse into one with a `tone` |
+| an inline message about the thing on screen | `Alert` | `Alert` ✓ | `Alert` ✓ *(plus four fixed messages built on it)* |
 | the screen has nothing to show | `EmptyState` | `EmptyState` ✓ | `EmptyState` ✓ |
 
-The app's five message components are one component with five tones. They
-diverged because each was written where it was first needed; the dashboard's
-`Alert` already takes `tone`, and the tones already mean the same thing in both
-products — brand for *in progress and healthy*, success for *closed*, warn for
-*waiting on someone*, danger for *money is at risk*, neutral for *no longer
-live*.
+**Landed as a rename, and this row had overstated the work.** It read
+"`Banner`, `Problem`, `HorizonNotice`, `SuccessNotice`, `QueuedNotice` →
+collapse into one with a `tone`", on the strength of counting five exported
+names. Opening the files found one implementation: the app's `Banner` had taken
+a `tone` since the day it was written, and the other four are three-line presets
+over it. So `Banner` became `Alert`, which is what the dashboard already called
+it, and nothing else moved.
+
+**The four presets stayed, deliberately.** Each is a sentence the app says in
+one situation, and each owns the copy key for it — `Problem` is written at 48
+call sites and `QueuedNotice` at 9. Collapsing them would have copied a
+translation key to 67 places and let the wording drift between them, which is
+this catalogue's own failure mode rather than a cure for it. A preset over a
+component is not a second component; the rule this row was reaching for counts
+implementations, not exported names.
+
+That is the third row corrected by opening a file instead of reading a name —
+`FieldRow`, then `TextField`, now this one. The correction runs the other way
+here, which is worth noticing: the first two kept two things apart that a word
+had joined, and this one found the joining already done.
+
+The tones are shared and already mean the same thing in both products — brand
+for *in progress and healthy*, success for *closed*, warn for *waiting on
+someone*, danger for *money is at risk*, neutral for *no longer live*.
+
+**One inline message on the web is still hand-rolled**, and it is the drift this
+row exists to catch rather than an exception to it: `components/ui/action-form.tsx`
+in the dashboard spells `bg-danger-soft … ring-danger/25` directly instead of
+rendering an `Alert`, so a form's refusal is the one message in either product
+that is not the component. Found while landing the app's half; not fixed, and
+not counted as done anywhere. The app is guarded against the same thing by
+`__tests__/inlineMessages.test.ts`, which allows exactly two files to fill a
+block with a tone and names them.
 
 ## Numbers
 
