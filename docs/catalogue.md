@@ -78,15 +78,36 @@ keeps its name; the resemblance is in the word `Row` and nowhere else.
 | concept | agreed name | web | app |
 | --- | --- | --- | --- |
 | a labelled field wrapper | `Field` | `Field` ✓ | `Field` ✓ |
-| a single-line text input | `Input` | `Input` ✓ | `TextField` → rename |
+| the bare control | `Input` | `Input` ✓ | — *(no bare control)* |
+| a labelled single-line text field | — *(composed at the call site)* | `Field` + `Input` | `TextField` ✓ |
 | a choice from a closed list | `Select` | `Select` ✓ | `Select` ✓ |
 | a phone number | `PhoneField` | `PhoneField` ✓ | `PhoneField` ✓ |
 | an amount of money | `AmountField` | — *(spelled inline)* | `AmountField` ✓ |
 | a date | `DateField` | — *(native `date` input)* | `DateField` ✓ |
 | search | `SearchInput` | `SearchInput` ✓ | `SearchInput` ✓ |
 
-`Input` over `TextField` because the app's own `Field` is already the wrapper, so
-`TextField` reads as a second wrapper rather than the control inside it.
+**`Input` and `TextField` are different components and both keep their names.**
+This table said "`TextField` → rename" until somebody opened the two files, on
+the reasoning that `Field` was already the wrapper so `TextField` read as a
+second one. That reasoning had it backwards.
+
+The web's `Input` is a bare `<input>` wearing the control classes: no label, no
+hint, no error, and a call site composes it inside a `Field`. The app's
+`TextField` *is* that composition — it renders a `Field` around a `TextInput` —
+and adds three things the web has no equivalent of: the focus report that keeps
+a field above the keyboard, the reveal toggle on a password, and a suffix for a
+currency unit. Renaming it to `Input` would have put one name on two different
+components, which is what this catalogue exists to prevent.
+
+The split under `Field` is the platforms differing, not the names drifting. The
+web associates a `<label htmlFor>` with a control, so it composes; React Native
+has no such association, so it hands out one component per input kind. That is
+why the app has a `*Field` family and the web does not, and why collapsing one
+member of it would have cost the app the only naming symmetry its form layer
+has.
+
+This is the `FieldRow` mistake a second time, and it is the same tell both
+times: a shared word, checked against nothing.
 
 ## Navigation and filtering
 
@@ -123,6 +144,17 @@ for different distances. The values are in [tokens.md](tokens.md).
 On the web a role is a single class — `text-body`, `text-label` — carrying size,
 leading and weight together, because a size without a weight is not a decision
 anybody made. On the app each is a component in `ui/Text.tsx`.
+
+**A role is one weight, and the role carries it.** `label` is where this had to
+be settled: the web had twelve eyebrows written `text-label font-semibold` and
+ten written plain, the same uppercase grey caption over a figure either way,
+while the app's `Label` had no override anywhere. The app's reading won, so the
+web dropped the twelve rather than the app gaining a thirteenth spelling — a
+role that means 500 on one platform and 600 on the other is two roles sharing a
+name. `lib/type-scale.test.ts` in the dashboard holds the line and counts the
+three places still allowed to say a weight beside `text-label`, none of which
+is a label: they borrow the role's size for initials in an avatar and a control
+in the dark shell.
 
 `mono` is the one that is spelled differently by necessity: on the web it is a
 custom utility that includes the family, because splitting it would mean writing
