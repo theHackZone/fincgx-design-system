@@ -55,6 +55,13 @@ history has the same question as an analyst looking at the book.
 Shipped in the shared source so the app can take it without a second argument
 about colour.
 
+[catalogue.md](catalogue.md) disagreed with this section for two revisions,
+listing the app's `StackedBar`, `Meter` and `Bar` against `SeverityBar` as
+though the ramp existed there under three names. It does not: those are two
+named series in one bar, a single proportion, and a ranked comparison. The row
+is fixed, and the gap is still a gap — a component to write, with its tokens
+already in the package.
+
 ## Nothing here describes motion or elevation
 
 Both apps have shadows and transitions, spelled inline on both sides. They are

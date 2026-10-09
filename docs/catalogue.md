@@ -48,23 +48,66 @@ The tones are shared and already mean the same thing in both products — brand
 for *in progress and healthy*, success for *closed*, warn for *waiting on
 someone*, danger for *money is at risk*, neutral for *no longer live*.
 
-**One inline message on the web is still hand-rolled**, and it is the drift this
-row exists to catch rather than an exception to it: `components/ui/action-form.tsx`
-in the dashboard spells `bg-danger-soft … ring-danger/25` directly instead of
-rendering an `Alert`, so a form's refusal is the one message in either product
-that is not the component. Found while landing the app's half; not fixed, and
-not counted as done anywhere. The app is guarded against the same thing by
-`__tests__/inlineMessages.test.ts`, which allows exactly two files to fill a
-block with a tone and names them.
+**The web had been hand-rolling this block in five places**, which is the drift
+this row exists to catch and is worth recording as the sharper lesson of the
+two. The app, whose column read as the untidy one, had a single implementation
+all along. The dashboard, marked ✓ because a component named `Alert` existed,
+was spelling `rounded-lg bg-<tone>-soft px-3 py-2 text-body text-<tone> ring-1
+ring-inset ring-<tone>/25` out by hand in the login form, both halves of
+`ActionForm` and twice in the signature pad — the same string five times, free
+to drift from the component and from each other. **A ✓ meant the name existed,
+not that it was used.**
+
+All five now render `Alert`, which gained one prop in the process: `live`, for
+a message that was not there a moment ago. The two success blocks carried
+`aria-live="polite"` and `Alert` had no way to say it, so replacing them
+naively would have cost a screen-reader announcement. `danger` needs no flag —
+`role="alert"` is already an assertive live region.
+
+Both sides are now guarded rather than agreed: `lib/inline-messages.test.ts` in
+the dashboard allows **no** file to write a tone fill with an inset ring, and
+`__tests__/inlineMessages.test.ts` in the app allows exactly two to read a
+tone's background at all, naming them. Each was planted against a real file and
+watched fail.
 
 ## Numbers
 
 | concept | agreed name | web | app |
 | --- | --- | --- | --- |
-| a label above a number | `Stat` | `Stat` ✓ | `Stat`, `StatTile`, `StatGrid` |
-| a stacked bar of severity bands | `SeverityBar` | `SeverityBar` ✓ | `StackedBar`, `Meter`, `Bar` |
-| a ranked list with bars | `BarList` | `BarList` ✓ | — |
-| a score on a dial | `ScoreDial` | `ScoreDial` ✓ | — |
+| a label above a number | `Stat` | `Stat` ✓ | `Stat` ✓ |
+| a container that lays those out | *(unsettled)* | the generic `Grid` | `StatGrid` |
+| the key to a multi-series visual | `Legend` | `Legend` ✓ | `Legend` ✓ |
+| one labelled horizontal bar | `Bar` | inside `BarList` | `Bar` ✓ |
+| a ranked list of them | `BarList` | `BarList` ✓ | — *(screens map `Bar`)* |
+| a single proportion, spelled out | `Meter` | — *(spelled inline)* | `Meter` ✓ |
+| two named series in one bar | `StackedBar` | — *(`StackedColumns`, over time)* | `StackedBar` ✓ |
+| the PAR 10/20/30 arrears bands | `SeverityBar` | `SeverityBar` ✓ | — *(no severity ramp)* |
+| a score on a dial | `ScoreDial` | `ScoreDial` ✓ | — *(a `Bar` per factor)* |
+
+**This table used to have four rows, and three of them were wrong.** It read
+"`StackedBar`, `Meter`, `Bar`" in the app's column against *a stacked bar of
+severity bands*, which put one name on three components on the strength of the
+word *bar*. They are a ranked comparison, a single proportion, and two named
+series side by side. None of them is `SeverityBar`, which draws the PAR
+10/20/30 arrears bands — and [open-questions.md](open-questions.md) in this same
+repo already said, three sections further down, that the app has no severity
+ramp at all. The row contradicted its neighbour and nobody noticed, because
+nobody opened the files.
+
+So the ramp is a **gap**, not a rename: the app needs a `SeverityBar` written,
+and the shared source already ships the `severity-*` tokens for it. The rows
+above now say what each product has, including the four that exist on one side
+only. `Bar` is listed separately from `BarList` because the app composes the
+list at the call site and the web does not, which is the same `Field` / `Input`
+split one section down.
+
+**`StatTile` became `Stat`,** which is the rename this row had been asking for
+and the only one in this section that was real. The app's `wide` became `lead`
+with it: the boolean marks the one figure a screen leads on, and `wide` named
+what that does to the layout instead of what it means — on a two-column phone
+grid the two happen to coincide, and on the web they do not, because `lead` sets
+the type role as well as the span. Four call sites, so there was no reason to
+leave the products disagreeing about it.
 
 **`Figure` became `Stat`,** and this was a correction to the type work rather
 than a preference. That phase renamed the *type role* `display` → `figure`, because
